@@ -19,6 +19,8 @@ app.use('/auth', authRoutes);
 const exoplanetRoutes=require('./routes/geminiRoutes.js')
 app.use("/exoplanets", exoplanetRoutes);
 
+const onboardingRoutes = require('./routes/onboardingRoutes');
+app.use('/onboarding', onboardingRoutes);
 
 const PORT = process.env.PORT || 5000;
 

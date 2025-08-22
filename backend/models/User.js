@@ -22,6 +22,15 @@ const UserSchema = new mongoose.Schema({
   refreshToken: {
     type: String,
     select: false,
+  
+},
+ onboardingCompleted: { 
+    type: Boolean, 
+    default: false 
+  },
+  onboardingData: { 
+    type: Object, 
+    default: {} 
   }
 }, {
   timestamps: true
