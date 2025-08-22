@@ -1,9 +1,15 @@
 import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ExplorePage from "./pages/ExplorePage";
 
 function App() {
   return (
     <div>
-      <h1 class="text-3xl font-bold underline">Hello world!</h1>
+      <Router>
+        <Routes>
+          <Route path="/explore" element={<ExplorePage />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
