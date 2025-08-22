@@ -5,6 +5,7 @@ import AuthPage from "./pages/authPage";
 import ExplorePage from "./pages/ExplorePage";
 import LandingPage from "./pages/landingPage";
 import OnboardingPage from "./pages/onboardingPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -13,8 +14,11 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<AuthPage />} />
-          <Route path="/explore" element={<ExplorePage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route element={<ProtectedRoute />}>
+
+          <Route path="/explore" element={<ExplorePage />} />
+          </Route>
         </Routes>
       </Router>
     </div>
