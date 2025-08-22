@@ -73,7 +73,8 @@ const googleLogin = async (req, res) => {
         username: user.username,
         email: user.email,
         avatar: user.avatar,
-        bio: user.bio
+        bio: user.bio,
+        onboardingCompleted: user.onboardingCompleted,
       }
     });
   } catch (error) {
