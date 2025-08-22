@@ -16,6 +16,10 @@ app.use(cors({
 const authRoutes = require('./routes/authRoutes');
 app.use('/auth', authRoutes);
 
+const exoplanetRoutes=require('./routes/geminiRoutes.js')
+app.use("/exoplanets", exoplanetRoutes);
+
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
