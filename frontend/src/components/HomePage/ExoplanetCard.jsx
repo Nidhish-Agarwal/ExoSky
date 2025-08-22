@@ -97,13 +97,14 @@ const ExoplanetCard = ({ planet, onLearnMore }) => (
       </div>
 
       {/* Single "Get AI Insights" button - removed the eye button */}
-      <button 
-        onClick={() => onLearnMore(planet)}
-        className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-3 py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm font-medium group-hover:shadow-lg group-hover:shadow-cyan-500/20"
-      >
-        <MessageSquare className="w-4 h-4" />
-        <span>Get AI Insights</span>
-      </button>
+<button 
+  onClick={() => onLearnMore(planet)}  // triggers chat opening
+  className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-3 py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-sm font-medium group-hover:shadow-lg group-hover:shadow-cyan-500/20"
+>
+  <MessageSquare className="w-4 h-4" />
+  <span>Get AI Insights</span>
+</button>
+
     </div>
   </div>
 );
