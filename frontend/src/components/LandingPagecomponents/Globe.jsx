@@ -79,7 +79,7 @@ export function Globe({ globeConfig, data }) {
     shininess: 0.9,
     arcTime: 500,
     arcLength: 0.9,
-    rings: 1,
+    rings: 2,
     maxRings: 3,
     ...globeConfig,
   };
