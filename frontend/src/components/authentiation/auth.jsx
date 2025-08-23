@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import * as THREE from 'three';
+import { useNavigate } from 'react-router-dom';
 import { 
   Shield,
   Activity,
@@ -15,6 +16,7 @@ const ExoSkyAuth = () => {
   const [currentFunFactIndex, setCurrentFunFactIndex] = useState(0);
   const mountRef = useRef(null);
   const sceneRef = useRef(null);
+  const navigate = useNavigate();
 
   const mainFacts = [
     {
@@ -174,8 +176,18 @@ const ExoSkyAuth = () => {
       // /Storing the accessToken in the localStorage
       localStorage.setItem("accessToken", accessToken);
       console.log('Login successful:', user);
-      alert(`Welcome aboard, ${user.username}! 🚀`);
       
+      
+
+      // Redirect user based on onboarding status
+      console.log("User from backend:", user);
+console.log("Onboarding completed?", user.onboardingCompleted);
+      if (user.onboardingCompleted) {
+  navigate("/explore");
+} else {
+  navigate("/onboarding");
+}
+
       // Show new random facts after successful login
       const { mainIndex, funIndex } = getRandomIndices();
       setCurrentFactIndex(mainIndex);
