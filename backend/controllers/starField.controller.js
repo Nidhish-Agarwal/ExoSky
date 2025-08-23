@@ -182,6 +182,7 @@ const getExoPlanets = (req, res) => {
 };
 
 const getStarsAroundExoPlanet = (req, res) => {
+  console.log("received planet name", req.params.plName);
   const cache = new Map();
   const CACHE_TTL_MS = 60 * 1000; // 60s TTL (adjust as needed)
   try {
@@ -287,6 +288,11 @@ const getStarsAroundExoPlanet = (req, res) => {
 
     return res.json({
       planet: rawName,
+      planet_data: {
+        disc_year: planet.disc_year,
+        disc_method: planet.disc_method,
+        pl_orbper: planet.pl_orbper,
+      },
       planet_coords_pc: planet.coords_pc,
       count_total_visible: computed.length,
       returned: resultStars.length,
