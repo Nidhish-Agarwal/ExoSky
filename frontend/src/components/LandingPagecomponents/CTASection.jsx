@@ -15,7 +15,7 @@ export default function CTASection() {
       id: 2,
       name: "Tejas Philip Thomas",
       designation: "FullStack Developer",
-      image: "/TejasT.jpeg",
+      image: "/tejas.jpg",
     },
     {
       id: 3,
@@ -27,7 +27,7 @@ export default function CTASection() {
       id: 4,
       name: "Nidhish Agarwal",
       designation: "FullStack Developer",
-      image: "/nidhish.jpg",
+      image: "/nidhishh.jpg",
     },
     {
       id: 5,
