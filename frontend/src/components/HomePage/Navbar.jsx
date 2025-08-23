@@ -1,7 +1,21 @@
-import React, { useState } from 'react';
-import { Users, Search, Book, Grid3X3, Satellite, Menu, X } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Users,
+  Search,
+  Book,
+  Grid3X3,
+  Satellite,
+  Menu,
+  X,
+  Settings,
+} from "lucide-react";
 
-const Navbar = ({onLearnClick, onGalleryClick, onProfileClick }) => {
+const Navbar = ({
+  onLearnClick,
+  onGalleryClick,
+  onProfileClick,
+  onSettingsClick,
+}) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -20,26 +34,33 @@ const Navbar = ({onLearnClick, onGalleryClick, onProfileClick }) => {
             ExoSky
           </span>
         </div>
-        
+
         {/* Desktop Navigation Buttons - Right side */}
         <div className="hidden md:flex items-center space-x-4 lg:space-x-8">
-          <button 
+          <button
             onClick={onLearnClick}
             className="text-gray-300 hover:text-white transition-colors flex items-center gap-2 hover:bg-cyan-900/30 px-3 py-2 rounded-lg"
           >
             <Book className="w-4 h-4" />
             <span className="hidden lg:inline">Learn</span>
           </button>
-          <button 
+          <button
             onClick={onGalleryClick}
             className="text-gray-300 hover:text-white transition-colors flex items-center gap-2 hover:bg-cyan-900/30 px-3 py-2 rounded-lg"
           >
             <Grid3X3 className="w-4 h-4" />
             <span className="hidden lg:inline">Gallery</span>
           </button>
-          
+          <button
+            onClick={onSettingsClick}
+            className="text-gray-300 hover:text-white transition-colors flex items-center gap-2 hover:bg-cyan-900/30 px-3 py-2 rounded-lg"
+          >
+            <Settings className="w-4 h-4" />
+            <span className="hidden lg:inline">Settings</span>
+          </button>
+
           {/* Profile Button - Far right */}
-          <button 
+          <button
             onClick={onProfileClick}
             className="w-10 h-10 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform"
           >
@@ -49,7 +70,7 @@ const Navbar = ({onLearnClick, onGalleryClick, onProfileClick }) => {
 
         {/* Mobile menu button */}
         <div className="md:hidden flex items-center">
-          <button 
+          <button
             onClick={toggleMobileMenu}
             className="w-10 h-10 bg-gradient-to-r from-cyan-600 to-blue-600 rounded-full flex items-center justify-center hover:scale-110 transition-transform"
           >
@@ -66,7 +87,7 @@ const Navbar = ({onLearnClick, onGalleryClick, onProfileClick }) => {
       {isMobileMenuOpen && (
         <div className="md:hidden bg-slate-900/95 backdrop-blur-lg border-t border-cyan-500/30">
           <div className="px-4 py-4 space-y-4">
-            <button 
+            <button
               onClick={() => {
                 onLearnClick();
                 setIsMobileMenuOpen(false);
@@ -76,7 +97,7 @@ const Navbar = ({onLearnClick, onGalleryClick, onProfileClick }) => {
               <Book className="w-5 h-5" />
               Learn
             </button>
-            <button 
+            <button
               onClick={() => {
                 onGalleryClick();
                 setIsMobileMenuOpen(false);
@@ -86,7 +107,7 @@ const Navbar = ({onLearnClick, onGalleryClick, onProfileClick }) => {
               <Grid3X3 className="w-5 h-5" />
               Gallery
             </button>
-            <button 
+            <button
               onClick={() => {
                 onProfileClick();
                 setIsMobileMenuOpen(false);

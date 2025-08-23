@@ -1,6 +1,11 @@
 import React, { useEffect, useRef } from "react";
 
-const ConstellationPreview = ({ stars = [], connections = [], width = 250, height = 150 }) => {
+const ConstellationPreview = ({
+  stars = [],
+  connections = [],
+  width = 250,
+  height = 150,
+}) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -22,10 +27,18 @@ const ConstellationPreview = ({ stars = [], connections = [], width = 250, heigh
       const constellationWidth = maxX - minX;
       const constellationHeight = maxY - minY;
 
-      const offsetX = (width - constellationWidth) / 2 - minX;
-      const offsetY = (height - constellationHeight) / 2 - minY;
+      const scaleX = width / constellationWidth;
+      const scaleY = height / constellationHeight;
+      const padding = 0.9;
+      const scale = Math.min(scaleX, scaleY) * padding;
 
-      // Draw connections in bright white
+      const mapX = (x) =>
+        (x - minX) * scale + (width - constellationWidth * scale) / 2;
+      const mapY = (y) =>
+        height -
+        ((y - minY) * scale + (height - constellationHeight * scale) / 2);
+
+      // Draw connections
       ctx.strokeStyle = "rgba(255,255,255,0.9)";
       ctx.lineWidth = 1.5;
       connections.forEach(([a, b]) => {
@@ -33,16 +46,16 @@ const ConstellationPreview = ({ stars = [], connections = [], width = 250, heigh
         const starB = stars[b];
         if (starA && starB) {
           ctx.beginPath();
-          ctx.moveTo(starA.x + offsetX, starA.y + offsetY);
-          ctx.lineTo(starB.x + offsetX, starB.y + offsetY);
+          ctx.moveTo(mapX(starA.x), mapY(starA.y));
+          ctx.lineTo(mapX(starB.x), mapY(starB.y));
           ctx.stroke();
         }
       });
 
-      // Draw stars as white glowing circles
+      // Draw stars
       stars.forEach((s) => {
         ctx.beginPath();
-        ctx.arc(s.x + offsetX, s.y + offsetY, 3, 0, Math.PI * 2);
+        ctx.arc(mapX(s.x), mapY(s.y), 3, 0, Math.PI * 2);
         ctx.fillStyle = "white";
         ctx.shadowBlur = 6;
         ctx.shadowColor = "white";

@@ -292,6 +292,7 @@ const getStarsAroundExoPlanet = (req, res) => {
         disc_year: planet.disc_year,
         disc_method: planet.disc_method,
         pl_orbper: planet.pl_orbper,
+        hostname: planet.hostname,
       },
       planet_coords_pc: planet.coords_pc,
       count_total_visible: computed.length,

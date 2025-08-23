@@ -1,4 +1,3 @@
-import React from "react";
 import ConstellationPreview from "./ConstellationPreview";
 
 export default function ConstellationModal({ isOpen, onClose, constellation }) {
@@ -41,16 +40,20 @@ export default function ConstellationModal({ isOpen, onClose, constellation }) {
         {/* Details section */}
         <div className="w-full text-center text-white text-sm mt-3 space-y-1">
           <p>
-            <span className="text-blue-300 font-semibold">Planet:</span> {constellation.planet}
+            <span className="text-blue-300 font-semibold">Planet:</span>{" "}
+            {constellation.planet}
           </p>
           <p>
-            <span className="text-blue-300 font-semibold">Stars:</span> {constellation.stars.length}
+            <span className="text-blue-300 font-semibold">Stars:</span>{" "}
+            {constellation.stars.length}
           </p>
           <p>
-            <span className="text-blue-300 font-semibold">Connections:</span> {constellation.connections.length}
+            <span className="text-blue-300 font-semibold">Connections:</span>{" "}
+            {constellation.connections.length}
           </p>
           <p>
-            <span className="text-blue-300 font-semibold">Created At:</span> {formattedDate}
+            <span className="text-blue-300 font-semibold">Created At:</span>{" "}
+            {formattedDate}
           </p>
         </div>
 

@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import StarCanvas from "./StarCanvas";
-
+import { useParams } from "react-router-dom";
+import NightSkyStarMap from "../StarMap";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import { useEffect } from "react";
 
 const ExoSkyExplorer = () => {
+  const { plName } = useParams();
   const [selectedPlanet, setSelectedPlanet] = useState("Kepler-452b");
   const [viewMode, setViewMode] = useState("planetarium");
   const [sidebarSection, setSidebarSection] = useState("planet-info");
@@ -22,71 +25,39 @@ const ExoSkyExplorer = () => {
   const [includeExoplanetInfo, setIncludeExoplanetInfo] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const exoplanets = [
-    {
-      name: "Kepler-452b",
-      distance: "1402 light years away",
-      hostStar: "Kepler-452",
-      constellation: "Cygnus",
-      type: "Super Earth",
-    },
-  ];
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const axiosPrivate = useAxiosPrivate();
 
-  const selectedPlanetData =
-    exoplanets.find((p) => p.name === selectedPlanet) || exoplanets[0];
+  useEffect(() => {
+    console.log(plName);
+    if (!plName) return;
 
-  const stars = [
-    {
-      name: "Arcturus",
-      magnitude: -0.1,
-      type: "Orange Giant",
-      distance: 36.7,
-      temperature: 4500,
-      x: 0.6,
-      y: 0.35,
-      color: "#FFA500",
-    },
-    {
-      name: "Vega",
-      magnitude: 0.03,
-      type: "Main Sequence",
-      distance: 25.3,
-      temperature: 9600,
-      x: 0.3,
-      y: 0.2,
-      color: "#B0E0E6",
-    },
-    {
-      name: "Sirius",
-      magnitude: -1.46,
-      type: "Main Sequence",
-      distance: 8.6,
-      temperature: 9940,
-      x: 0.8,
-      y: 0.7,
-      color: "#87CEEB",
-    },
-    {
-      name: "Betelgeuse",
-      magnitude: 0.5,
-      type: "Red Supergiant",
-      distance: 642,
-      temperature: 3500,
-      x: 0.15,
-      y: 0.8,
-      color: "#FF4500",
-    },
-    {
-      name: "Capella",
-      magnitude: 0.08,
-      type: "Giant",
-      distance: 42.9,
-      temperature: 5200,
-      x: 0.85,
-      y: 0.25,
-      color: "#FFFF99",
-    },
-  ];
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const response = await axiosPrivate.get(
+          `/visualization/exosky/${encodeURIComponent(plName)}`
+        );
+        console.log(response.data);
+
+        setData(response.data);
+        setSelectedPlanet(response.data.planet);
+      } catch (err) {
+        console.error("Error fetching exosky:", err);
+        setError(
+          err.response?.data?.error || err.message || "Something went wrong"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [plName]);
 
   const resetControls = () => {
     setBrightness(100);
@@ -126,48 +97,68 @@ const ExoSkyExplorer = () => {
 
   return (
     <div className="h-screen bg-gradient-to-br from-gray-900 via-blue-950 to-black text-white">
-      <div className="flex h-screen">
-        <Sidebar
-          sidebarSection={sidebarSection}
-          setSidebarSection={setSidebarSection}
-          selectedPlanet={selectedPlanet}
-          setSelectedPlanet={setSelectedPlanet}
-          exoplanets={exoplanets}
-          selectedPlanetData={selectedPlanetData}
-          viewMode={viewMode}
-          setViewMode={setViewMode}
-          brightness={brightness}
-          setBrightness={setBrightness}
-          starSize={starSize}
-          setStarSize={setStarSize}
-          magnitudeLimit={magnitudeLimit}
-          setMagnitudeLimit={setMagnitudeLimit}
-          resetControls={resetControls}
-          applyPreset={applyPreset}
-          horizontalPos={horizontalPos}
-          setHorizontalPos={setHorizontalPos}
-          verticalPos={verticalPos}
-          setVerticalPos={setVerticalPos}
-          skyRotation={skyRotation}
-          setSkyRotation={setSkyRotation}
-          isFullscreen={isFullscreen}
-          setIsFullscreen={setIsFullscreen}
-          exportFormat={exportFormat}
-          setExportFormat={setExportFormat}
-          exportQuality={exportQuality}
-          setExportQuality={setExportQuality}
-          includeLabels={includeLabels}
-          setIncludeLabels={setIncludeLabels}
-          includeGrid={includeGrid}
-          setIncludeGrid={setIncludeGrid}
-          includeExoplanetInfo={includeExoplanetInfo}
-          setIncludeExoplanetInfo={setIncludeExoplanetInfo}
-        />
+      {loading && (
+        <div className="flex items-center justify-center w-full h-64 bg-gray-100 rounded-lg shadow-md animate-pulse">
+          <p className="text-gray-500 text-lg">Loading planet data...</p>
+        </div>
+      )}
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col">
-          <Header viewMode={viewMode} selectedPlanet={selectedPlanet} />
-          <StarCanvas
+      {/* Error State */}
+      {error && (
+        <div className="w-full max-w-md p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-md">
+          <h2 className="font-semibold text-lg mb-2">Error fetching data</h2>
+          <p>{error}</p>
+        </div>
+      )}
+      {data && (
+        <div className="flex h-screen">
+          <Sidebar
+            sidebarSection={sidebarSection}
+            setSidebarSection={setSidebarSection}
+            selectedPlanet={selectedPlanet}
+            setSelectedPlanet={setSelectedPlanet}
+            exoplanets={data.planet}
+            selectedPlanetData={data.planet_data}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
+            brightness={brightness}
+            setBrightness={setBrightness}
+            starSize={starSize}
+            setStarSize={setStarSize}
+            magnitudeLimit={magnitudeLimit}
+            setMagnitudeLimit={setMagnitudeLimit}
+            resetControls={resetControls}
+            applyPreset={applyPreset}
+            horizontalPos={horizontalPos}
+            setHorizontalPos={setHorizontalPos}
+            verticalPos={verticalPos}
+            setVerticalPos={setVerticalPos}
+            skyRotation={skyRotation}
+            setSkyRotation={setSkyRotation}
+            isFullscreen={isFullscreen}
+            setIsFullscreen={setIsFullscreen}
+            exportFormat={exportFormat}
+            setExportFormat={setExportFormat}
+            exportQuality={exportQuality}
+            setExportQuality={setExportQuality}
+            includeLabels={includeLabels}
+            setIncludeLabels={setIncludeLabels}
+            includeGrid={includeGrid}
+            setIncludeGrid={setIncludeGrid}
+            includeExoplanetInfo={includeExoplanetInfo}
+            setIncludeExoplanetInfo={setIncludeExoplanetInfo}
+          />
+
+          {/* Main Content */}
+          <div className="flex-1 flex flex-col">
+            <Header viewMode={viewMode} selectedPlanet={selectedPlanet} />
+            <NightSkyStarMap
+              starData={data}
+              magnitudeLimit={magnitudeLimit}
+              brightness={brightness}
+              starSize={starSize}
+            />
+            {/* <StarCanvas
             stars={stars}
             brightness={brightness}
             starSize={starSize}
@@ -178,9 +169,10 @@ const ExoSkyExplorer = () => {
             skyRotation={skyRotation}
             showStarTooltip={showStarTooltip}
             setShowStarTooltip={setShowStarTooltip}
-          />
+          /> */}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

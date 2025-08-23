@@ -3,32 +3,12 @@ import { Star, Eye, Map, Telescope } from "lucide-react";
 
 const PlanetInfo = ({
   selectedPlanet,
-  setSelectedPlanet,
-  exoplanets,
   selectedPlanetData,
   viewMode,
-  setViewMode
+  setViewMode,
 }) => {
   return (
     <div className="space-y-6">
-      {/* Planet Selection */}
-      <div>
-        <label className="block text-sm font-medium text-slate-300 mb-2">
-          Select Exoplanet
-        </label>
-        <select
-          value={selectedPlanet}
-          onChange={(e) => setSelectedPlanet(e.target.value)}
-          className="w-full bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"
-        >
-          {exoplanets.map((planet) => (
-            <option key={planet.name} value={planet.name}>
-              {planet.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {/* Planet Info */}
       <div className="space-y-4">
         <div className="flex items-center space-x-3">
@@ -48,26 +28,20 @@ const PlanetInfo = ({
         <div className="space-y-3 text-sm">
           <div className="flex justify-between">
             <span className="text-slate-400">Host Star:</span>
-            <span className="text-white">
-              {selectedPlanetData.hostStar}
-            </span>
+            <span className="text-white">{selectedPlanetData.hostname}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Constellation:</span>
-            <span className="text-white">
-              {selectedPlanetData.constellation}
-            </span>
+            <span className="text-slate-400">Discovery Year:</span>
+            <span className="text-white">{selectedPlanetData.disc_year}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-slate-400">Type:</span>
-            <span className="text-white">{selectedPlanetData.type}</span>
+            <span className="text-slate-400">Discovery Method:</span>
+            <span className="text-white">{selectedPlanetData.disc_method}</span>
           </div>
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-400">
-            Compare with Earth
-          </span>
+          <span className="text-sm text-slate-400">Compare with Earth</span>
           <button className="flex items-center space-x-2 px-3 py-1 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm transition-colors">
             <Eye className="w-4 h-4" />
             <span>Show</span>

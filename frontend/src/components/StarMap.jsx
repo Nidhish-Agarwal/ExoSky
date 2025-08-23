@@ -2,12 +2,15 @@ import React, { useState, useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { toast } from "react-toastify";
+import CentralPlanet from "./CentralPlanet";
 
 // Configuration for the night sky
 const SKY_RADIUS = 100; // Large sphere radius for the sky dome
-const MIN_STAR_SIZE = 0.02;
-const MAX_STAR_SIZE = 0.15;
-const TWINKLE_SPEED = 2;
+const MIN_STAR_SIZE = 0.03; // Smaller, more realistic
+const MAX_STAR_SIZE = 0.25; // Reduced maximum size
+const TWINKLE_SPEED = 1.2;
 
 // Star color mapping based on spectral type
 const getStarColorBySpectralType = (spectralType, bvColor) => {
@@ -56,6 +59,8 @@ const SkylineStar = ({
   onHover,
   isSelected,
   planetPosition,
+  brightness,
+  starSize,
 }) => {
   const meshRef = useRef();
   const [hovered, setHovered] = useState(false);
@@ -68,17 +73,20 @@ const SkylineStar = ({
 
   // Calculate star size based on magnitude (brighter stars are bigger)
   const size = useMemo(() => {
-    const baseSizeFromMag = Math.max(
-      MIN_STAR_SIZE,
-      MAX_STAR_SIZE - star.mag * 0.02
-    );
+    // Convert percentage to multiplier (e.g., 100% = 1.0, 150% = 1.5, 50% = 0.5)
+    const sizeMultiplier = starSize / 100;
+
+    const minSize = MIN_STAR_SIZE * sizeMultiplier;
+    const maxSize = MAX_STAR_SIZE * sizeMultiplier;
+
+    const baseSizeFromMag = Math.max(minSize, maxSize - star.mag * 0.02);
     let finalSize = baseSizeFromMag;
 
     if (isSelected) finalSize *= 3;
     if (hovered) finalSize *= 2;
 
     return finalSize;
-  }, [star.mag, isSelected, hovered]);
+  }, [star.mag, isSelected, hovered, starSize]);
 
   const color = getStarColorBySpectralType(star.spectral_type, star.color);
 
@@ -114,15 +122,19 @@ const SkylineStar = ({
           onClick(star);
         }}
       >
-        <sphereGeometry args={[size, 8, 8]} />
+        <sphereGeometry args={[size * 3, 8, 8]} />
         <meshBasicMaterial color={color} />
       </mesh>
 
       {/* Simple glow effect for bright stars */}
       {star.mag < 2 && (
         <mesh position={[0, 0, 0]}>
-          <sphereGeometry args={[size * 2, 8, 8]} />
-          <meshBasicMaterial color={color} transparent opacity={0.2} />
+          <sphereGeometry args={[size * 5, 8, 8]} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={Math.max(0.3, Math.min(1.0, brightness * 0.8))}
+          />
         </mesh>
       )}
 
@@ -139,28 +151,6 @@ const SkylineStar = ({
         </Text>
       )}
     </group>
-  );
-};
-
-// Constellation lines on the sky dome
-const SkylineConstellationLines = ({ stars, planetPosition }) => {
-  if (stars.length < 2) return null;
-
-  const points = stars.map((star) =>
-    convertToSkyPosition(star, planetPosition)
-  );
-  const geometry = new THREE.BufferGeometry().setFromPoints(points);
-
-  return (
-    <line>
-      <primitive object={geometry} attach="geometry" />
-      <lineBasicMaterial
-        color="#ff6b35"
-        transparent
-        opacity={0.8}
-        linewidth={2}
-      />
-    </line>
   );
 };
 
@@ -190,7 +180,7 @@ const InfoPanel = ({
   const [isMinimized, setIsMinimized] = useState(false);
 
   return (
-    <div className="absolute top-4 left-4 z-10 max-w-md">
+    <div className="absolute top-4 left-4 z-10 w-xs">
       <div className="bg-black bg-opacity-80 backdrop-blur-sm text-white p-4 rounded-lg border border-blue-400 shadow-2xl">
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-bold text-blue-300">
@@ -280,20 +270,54 @@ const InfoPanel = ({
 };
 
 // Main StarMap Component with night sky view
-const NightSkyStarMap = ({ starData }) => {
+const NightSkyStarMap = ({
+  starData,
+  magnitudeLimit,
+  brightness,
+  starSize,
+}) => {
   const [hoveredStar, setHoveredStar] = useState(null);
   const [selectedStars, setSelectedStars] = useState([]);
+  const [selectedStarsConnections, setSelectedStarsConnections] = useState([]); // new
   const [constellationName, setConstellationName] = useState("");
+  const axiosPrivate = useAxiosPrivate();
 
-  // Planet position from data
+  const visibleStars = useMemo(() => {
+    return starData.stars.filter((star) => star.mag >= magnitudeLimit);
+  }, [starData.stars, magnitudeLimit]);
+
   const planetPosition = starData?.planet_coords_pc || { x: 0, y: 0, z: 0 };
 
+  // Handle star click
   const handleStarClick = (star) => {
     setSelectedStars((prev) => {
-      const exists = prev.find((s) => s.id === star.id);
-      if (exists) {
+      const existsIndex = prev.findIndex((s) => s.id === star.id);
+
+      if (existsIndex !== -1) {
+        // Deselect: remove the star and any lines touching it
+        setSelectedStarsConnections((conns) =>
+          conns.filter(([a, b]) => a.id !== star.id && b.id !== star.id)
+        );
         return prev.filter((s) => s.id !== star.id);
       }
+
+      // Select: only connect from the last star in the list
+      const last = prev[prev.length - 1];
+      if (last) {
+        setSelectedStarsConnections((conns) => {
+          // Avoid duplicate connection if it already exists
+          const alreadyExists = conns.some(
+            ([a, b]) =>
+              (a.id === last.id && b.id === star.id) ||
+              (a.id === star.id && b.id === last.id)
+          );
+          if (!alreadyExists) {
+            return [...conns, [last, star]];
+          }
+          return conns;
+        });
+      }
+
       return [...prev, star];
     });
   };
@@ -309,36 +333,65 @@ const NightSkyStarMap = ({ starData }) => {
       return;
     }
 
-    console.log("Saving constellation:", {
-      name: constellationName,
-      stars: selectedStars,
-      planet: starData?.planet,
+    // Build stars array for schema
+    const stars = selectedStars.map((s) => ({
+      id: s.id,
+      name: s.name,
+      x: s.x,
+      y: s.y,
+      z: s.z,
+      mag: s.mag,
+      color: s.color,
+      spectral_type: s.spectral_type,
+      bv: s.bv,
+      distance_pc_from_planet: s.distance_pc_from_planet ?? null,
+      catalog_distance_pc: s.catalog_distance_pc ?? null,
+      catalog_mag: s.catalog_mag ?? s.mag,
+    }));
+
+    // Build connections as index pairs (as required in schema)
+    const connections = selectedStarsConnections.map(([a, b]) => {
+      const aIndex = stars.findIndex((s) => s.id === a.id);
+      const bIndex = stars.findIndex((s) => s.id === b.id);
+      return [aIndex, bIndex];
     });
 
-    alert(`Constellation "${constellationName}" saved successfully!`);
-    setSelectedStars([]);
-    setConstellationName("");
+    const constellation = {
+      name: constellationName,
+      planet: starData?.planet,
+      planet_coords_pc: starData?.planet_coords_pc,
+      stars,
+      connections,
+      // ⚠️ createdBy will come from backend JWT (don’t send from client)
+    };
+
+    try {
+      console.log("constellation (to send):", constellation);
+      const response = await axiosPrivate.post("/constellation", constellation);
+      console.log("Saved constellation:", response.data);
+
+      // Reset selection
+      setSelectedStars([]);
+      setSelectedStarsConnections([]);
+      setConstellationName("");
+      toast.success("Constellation saved! 🌌 View it in the Gallery.");
+    } catch (error) {
+      console.error("Error saving constellation:", error);
+      toast.error("Failed to save constellation. Please try again!");
+    }
   };
 
-  if (!starData || !starData.stars) {
-    return (
-      <div className="w-full h-screen bg-gradient-to-b from-blue-900 to-black flex items-center justify-center">
-        <div className="text-white text-xl">Loading night sky...</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full h-screen bg-black overflow-hidden">
-      <InfoPanel
-        hoveredStar={hoveredStar}
-        selectedStars={selectedStars}
-        onSave={handleSaveConstellation}
-        constellationName={constellationName}
-        setConstellationName={setConstellationName}
-      />
-
-      {/* Instructions */}
+    <div className="w-full h-screen bg-black overflow-hidden relative">
+      <div className="absolute top-4 left-4 z-10 ">
+        <InfoPanel
+          hoveredStar={hoveredStar}
+          selectedStars={selectedStars}
+          onSave={handleSaveConstellation}
+          constellationName={constellationName}
+          setConstellationName={setConstellationName}
+        />
+      </div>
       <div className="absolute bottom-4 right-4 bg-black bg-opacity-60 text-white p-3 rounded-lg text-sm z-10">
         <p>
           🌟 Click stars to select • 🔄 Drag to look around • 🔍 Scroll to zoom
@@ -350,34 +403,31 @@ const NightSkyStarMap = ({ starData }) => {
 
       <Canvas
         camera={{
-          position: [0, 0, 0], // Camera at planet center (surface view)
+          position: [15, 25, 2],
           fov: 75,
           near: 0.1,
           far: SKY_RADIUS * 2,
         }}
-        onCreated={({ gl }) => {
-          gl.setClearColor(new THREE.Color("#000428"));
-        }}
+        onCreated={({ gl }) => gl.setClearColor(new THREE.Color("#000428"))}
       >
-        {/* Lighting for a night sky feel */}
-        <ambientLight intensity={0.1} color="#2244aa" />
-
-        {/* Controls - limited zoom to prevent breaking the illusion */}
+        <ambientLight intensity={0.1 * brightness} color="#2244aa" />
         <OrbitControls
           enablePan={false}
           enableZoom={true}
           enableRotate={true}
-          minDistance={0.1}
-          maxDistance={5}
+          minDistance={0.001}
+          maxDistance={25}
           target={[0, 0, 0]}
           autoRotate={false}
+          zoomSpeed={4}
+          rotateSpeed={0.8}
         />
 
-        {/* Night sky background */}
         <NightSkyBackground />
+        <CentralPlanet planetData={starData} />
+        <pointLight position={[2, 2, 2]} intensity={0.3} color="#ffffff" />
 
-        {/* Stars on the sky dome */}
-        {starData.stars.slice(0, 2000).map((star) => (
+        {visibleStars.slice(0, 1500).map((star) => (
           <SkylineStar
             key={star.id}
             star={star}
@@ -385,14 +435,30 @@ const NightSkyStarMap = ({ starData }) => {
             onHover={setHoveredStar}
             isSelected={!!selectedStars.find((s) => s.id === star.id)}
             planetPosition={planetPosition}
+            brightness={brightness} // ADD THIS
+            starSize={starSize} // ADD THIS
           />
         ))}
 
-        {/* Constellation lines */}
-        <SkylineConstellationLines
-          stars={selectedStars}
-          planetPosition={planetPosition}
-        />
+        {/* Draw lines based on selected connections */}
+        {selectedStarsConnections.map(([a, b], index) => {
+          const points = [
+            convertToSkyPosition(a, planetPosition),
+            convertToSkyPosition(b, planetPosition),
+          ];
+          const geometry = new THREE.BufferGeometry().setFromPoints(points);
+          return (
+            <line key={index}>
+              <primitive object={geometry} attach="geometry" />
+              <lineBasicMaterial
+                color="#ff6b35"
+                transparent
+                opacity={0.8}
+                linewidth={2}
+              />
+            </line>
+          );
+        })}
       </Canvas>
     </div>
   );
