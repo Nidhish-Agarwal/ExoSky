@@ -6,6 +6,7 @@ import LandingPage from "./pages/landingPage";
 import OnboardingPage from "./pages/onboardingPage";
 import SettingsPage from "./pages/SettingsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import VisualizationPage from "./pages/VisualizationPage";
 
 
 function App() {
@@ -18,7 +19,12 @@ function App() {
           <Route path="/onboarding" element={<OnboardingPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route element={<ProtectedRoute />}>
+<<<<<<< Updated upstream
           <Route path="/explore" element={<ExplorePage />} />
+=======
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/visualize/:plName" element={<VisualizationPage />} />
+>>>>>>> Stashed changes
           </Route>
         </Routes>
       </Router>
