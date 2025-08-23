@@ -49,7 +49,7 @@ const features = [
     title: "3D Universe",
     desc: "Explore stars in a 360° immersive space.",
     interactive: true,
-    href: "/explore",
+    href: "/login",
   },
   {
     title: "Constellations",
