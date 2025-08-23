@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AuthPage from "./pages/authPage";
 import ExplorePage from "./pages/ExplorePage";
 import LandingPage from "./pages/landingPage";
+import ExoSkyExplorer from "./components/visualize/ExoskyExplorer";
 import OnboardingPage from "./pages/onboardingPage";
 import SettingsPage from "./pages/SettingsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -19,12 +20,9 @@ function App() {
           <Route path="/onboarding" element={<OnboardingPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route element={<ProtectedRoute />}>
-<<<<<<< Updated upstream
           <Route path="/explore" element={<ExplorePage />} />
-=======
-            <Route path="/explore" element={<ExplorePage />} />
-            <Route path="/visualize/:plName" element={<VisualizationPage />} />
->>>>>>> Stashed changes
+          <Route path="/visualize" element={<ExoSkyExplorer/>}/>
+          <Route path="/visualize/:plName" element={<VisualizationPage />} />
           </Route>
         </Routes>
       </Router>
