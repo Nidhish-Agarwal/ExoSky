@@ -75,6 +75,7 @@ const googleLogin = async (req, res) => {
         avatar: user.avatar,
         bio: user.bio,
         onboardingCompleted: user.onboardingCompleted,
+
       }
     });
   } catch (error) {
