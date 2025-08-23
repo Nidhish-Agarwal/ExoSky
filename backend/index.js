@@ -24,13 +24,9 @@ app.use("/constellation", constellationRouter);
 
 const exoplanetRoutes = require("./routes/geminiRoutes.js");
 app.use("/exoplanets", exoplanetRoutes);
+const onboardingRoutes = require("./routes/onboardingRoutes");
+app.use("/onboarding", onboardingRoutes);
 
-<<<<<<< Updated upstream
-const onboardingRoutes = require('./routes/onboardingRoutes');
-app.use('/onboarding', onboardingRoutes);
-
-=======
->>>>>>> Stashed changes
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
