@@ -9,7 +9,6 @@ import SettingsPage from "./pages/SettingsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import VisualizationPage from "./pages/VisualizationPage";
 
-
 function App() {
   return (
     <div>
@@ -18,9 +17,12 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<AuthPage />} />
           <Route path="/onboarding" element={<OnboardingPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
           <Route element={<ProtectedRoute />}>
-          <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/explore" element={<ExplorePage />} />
+           </Route>
           <Route path="/visualize" element={<ExoSkyExplorer/>}/>
           <Route path="/visualize/:plName" element={<VisualizationPage />} />
           </Route>
