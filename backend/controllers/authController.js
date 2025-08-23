@@ -74,12 +74,7 @@ const googleLogin = async (req, res) => {
         email: user.email,
         avatar: user.avatar,
         bio: user.bio,
-<<<<<<< Updated upstream
-        onboardingCompleted: user.onboardingCompleted,
-      }
-=======
       },
->>>>>>> Stashed changes
     });
   } catch (error) {
     console.error("Google OAuth login error:", error.message);
