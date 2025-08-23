@@ -39,6 +39,7 @@ const SpaceBackground = () => {
   }, []);
 
   // Function to generate different asteroid shapes
+  // eslint-disable-next-line no-unused-vars
   const getAsteroidShape = (shapeId, size) => {
     const baseStyle = `absolute w-full h-full rounded-full`;
     

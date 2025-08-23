@@ -1,7 +1,9 @@
 import React from "react";
 import { Rocket } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-export default function FinalScreen({ onLaunch }) {
+export default function FinalScreen() {
+     const navigate = useNavigate(); 
   // Generate 100 random stars
   const stars = Array.from({ length: 100 }).map((_, i) => {
     const size =
@@ -50,7 +52,7 @@ export default function FinalScreen({ onLaunch }) {
         </p>
 
         <button
-          onClick={onLaunch}
+         onClick={() => navigate("/explore")}
           className="px-10 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-medium rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25"
         >
           Launch ExoSky

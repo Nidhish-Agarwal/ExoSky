@@ -27,7 +27,7 @@ export default function Onboarding({ onComplete }) {
   const [currentStep, setCurrentStep] = useState(-1); // -1 = intro, -2 = thank you
   const [answers, setAnswers] = useState({});
   const [currentAnswer, setCurrentAnswer] = useState(null);
-  const [userSelected, setUserSelected] = useState(false); // Track if answer was actively selected
+  const [userSelected, setUserSelected] = useState(false);
 
   const totalSteps = questionsData.length;
 
@@ -36,7 +36,7 @@ export default function Onboarding({ onComplete }) {
   const handleAnswer = (option) => {
     setCurrentAnswer(option);
     setAnswers(prev => ({ ...prev, [currentStep]: option }));
-    setUserSelected(true); // Mark this as a user action
+    setUserSelected(true);
   };
 
   const handleComplete = () => {
@@ -44,17 +44,38 @@ export default function Onboarding({ onComplete }) {
     if (onComplete) onComplete(answers);
   };
 
-  // Auto-advance only when the user actively selects/changes an answer
+  // Submit onboarding answers to backend
+  const submitOnboarding = async () => {
+    try {
+      const token = localStorage.getItem("accessToken"); // get JWT from login
+      const response = await fetch("http://localhost:5000/onboarding", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ answers }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to complete onboarding");
+      console.log("Onboarding submitted:", data);
+    } catch (err) {
+      console.error("Onboarding submission error:", err);
+    }
+  };
+
+  // Auto-advance only when user actively selects/changes an answer
   useEffect(() => {
     if (userSelected && currentStep >= 0 && currentStep < totalSteps) {
-      const timer = setTimeout(() => {
+      const timer = setTimeout(async () => {
         if (currentStep < totalSteps - 1) {
           setCurrentStep(prev => prev + 1);
           setCurrentAnswer(answers[currentStep + 1] || null);
         } else {
+          await submitOnboarding(); // send answers to backend on last step
           setCurrentStep(-2); // Thank You screen
         }
-        setUserSelected(false); // Reset flag after auto-advance
+        setUserSelected(false);
       }, 500);
       return () => clearTimeout(timer);
     }
