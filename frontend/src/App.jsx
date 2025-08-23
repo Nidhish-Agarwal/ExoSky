@@ -8,6 +8,7 @@ import OnboardingPage from "./pages/onboardingPage";
 import SettingsPage from "./pages/SettingsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import VisualizationPage from "./pages/VisualizationPage";
+import Gallery from "./pages/Gallery";
 
 function App() {
   return (
@@ -21,8 +22,7 @@ function App() {
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
           <Route element={<ProtectedRoute />}>
-            <Route path="/explore" element={<ExplorePage />} />
-            <Route path="/visualize" element={<ExoSkyExplorer />} />
+            <Route path="/explore" element={<ExplorePage />} /
             <Route path="/visualize/:plName" element={<VisualizationPage />} />
           </Route>
         </Routes>

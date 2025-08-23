@@ -27,6 +27,9 @@ app.use("/exoplanets", exoplanetRoutes);
 const onboardingRoutes = require("./routes/onboardingRoutes");
 app.use("/onboarding", onboardingRoutes);
 
+const onboardingRoutes = require('./routes/onboardingRoutes');
+app.use('/onboarding', onboardingRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
