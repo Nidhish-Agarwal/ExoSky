@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { X, Filter, Search, ChevronLeft, ChevronRight, Star, MapPin, Calendar, Dice5, ExternalLink, Navigation } from 'lucide-react';
-import exoplanetsData from '../../../../backend/exoplanets.json';
+import exoplanetsData from '../../../../backend/data/exoplanets.json';
 import { Link, useNavigate } from 'react-router-dom';
 
 // eslint-disable-next-line no-unused-vars
