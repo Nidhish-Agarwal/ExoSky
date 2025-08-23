@@ -51,7 +51,6 @@ const Explore = () => {
       onProfileClick={handleProfileClick}
     />
 
-    {/* 👇 push content down */}
     <div className="mt-12">
       <StatsPanel />
       <SearchPanel

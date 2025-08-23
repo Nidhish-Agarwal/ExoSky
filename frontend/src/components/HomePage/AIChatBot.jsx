@@ -93,7 +93,7 @@ const AIChatBot = ({ isOpen, onClose, selectedPlanet }) => {
               <Brain className="w-4 h-4 text-white" />
             </div>
             <h3 className="text-white font-semibold">
-              AI Storyteller - {selectedPlanet?.name || 'Exoplanet Guide'}
+                {selectedPlanet?.name || 'Exoplanet Guide'}
             </h3>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-white">

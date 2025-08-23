@@ -10,7 +10,7 @@ const exoplanetsData = [
     mass: '5.0 M⊕',
     radius: '1.6 R⊕',
     tags: ['Earth-like', 'Rocky', 'Potentially Habitable'],
-    color: '#3b82f6' // 👈 give each planet a color instead
+    color: '#3b82f6'
   },
   {
     id: 2,

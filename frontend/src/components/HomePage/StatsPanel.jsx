@@ -9,7 +9,7 @@ const StatsPanel = () => {
       title: "Confirmed Exoplanets",
       value: "5,983+",
       description: "Worlds beyond our solar system",
-      color: "from-cyan-500 to-blue-600",
+      color: "from-blue-500 to-indigo-600",
       delay: 0
     },
     {
@@ -25,7 +25,7 @@ const StatsPanel = () => {
       title: "Habitable Zone",
       value: "156",
       description: "Potential life-supporting worlds",
-      color: "from-green-500 to-teal-600",
+      color: "from-blue-500 to-indigo-600",
       delay: 200
     },
     {
@@ -33,7 +33,7 @@ const StatsPanel = () => {
       title: "New Discoveries",
       value: "127",
       description: "In the past year alone",
-      color: "from-amber-500 to-orange-500",
+      color: "from-blue-500 to-indigo-600",
       delay: 300
     }
   ];
