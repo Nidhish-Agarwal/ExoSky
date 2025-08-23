@@ -118,6 +118,14 @@ export default function HeroSection() {
       {/* World renders its own Canvas; stars are added inside World */}
       <World globeConfig={globeConfig} data={data} />
 
+      {/* EXOSKY Logo - Top Left Corner */}
+      <div className="absolute top-6 left-6 md:top-8 md:left-8 z-10 pointer-events-none">
+        <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-purple-400 to-pink-400 tracking-wider drop-shadow-lg">
+          EXOSKY
+        </h1>
+        <div className="h-1 w-16 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full mt-1 opacity-80"></div>
+      </div>
+
       {/* Overlay content */}
       <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-6 pointer-events-none">
         <h1 className="text-5xl md:text-7xl font-bold mb-6">
@@ -127,12 +135,14 @@ export default function HeroSection() {
           Explore stars, exoplanets, and galaxies through an interactive 3D
           universe.
         </p>
-        <button
+        <br />
+        <p>Scroll down for more.</p>
+        {/* <button
           className="px-8 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold shadow-lg pointer-events-auto"
           onClick={() => alert("Get Started clicked!")}
         >
           Get Started
-        </button>
+        </button> */}
       </div>
     </section>
   );
