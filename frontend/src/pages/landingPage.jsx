@@ -1,7 +1,3 @@
-// import Navbar from "../components/Navbar";
-// import HeroSection from "../components/HeroSection";
-// src/pages/LandingPage.jsx
-import { useEffect, useRef } from "react";
 import HeroSection from "../components/LandingPagecomponents/HeroSection";
 import FeaturesSection from "../components/LandingPagecomponents/FeaturesSection";
 import ShowcaseSection from "../components/LandingPagecomponents/ShowcaseSection";

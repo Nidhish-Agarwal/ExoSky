@@ -39,6 +39,7 @@ const ConstellationSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
     },
+    narration: { type: String },
   },
   { timestamps: true }
 ); // CreatedAt / UpdatedAt

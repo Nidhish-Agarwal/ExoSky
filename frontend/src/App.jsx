@@ -22,7 +22,7 @@ function App() {
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
           <Route element={<ProtectedRoute />}>
-            <Route path="/explore" element={<ExplorePage />} /
+            <Route path="/explore" element={<ExplorePage />} />
             <Route path="/visualize/:plName" element={<VisualizationPage />} />
           </Route>
         </Routes>

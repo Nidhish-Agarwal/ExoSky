@@ -1,4 +1,7 @@
 const ConstellationModel = require("../models/Constellation.model");
+const User = require("../models/User");
+const { generatePlanetNarration } = require("../services/geminiService");
+
 
 const storeConstellation = async (req, res) => {
   try {
@@ -14,10 +17,60 @@ const storeConstellation = async (req, res) => {
       planet_coords_pc,
       stars,
       connections: connections || [],
-      createdBy: req.userId, // from verifyUser middleware
+      createdBy: req.userId, 
     });
 
     const savedConstellation = await newConstellation.save();
+
+    const user = await User.findById(req.userId);
+    const onboardingData = user?.onboardingData || {};
+    const storyStyle = Object.values(onboardingData).join(", ")
+    const starsInfo = stars
+  .map(
+    (s, i) =>
+      `"${s.name}" at coordinates (x:${s.x}, y:${s.y}, z:${s.z}) with magnitude ${s.mag}`
+  )
+  .join("; ");
+
+const connectionsInfo = connections?.length
+  ? connections.map(c => `[${c[0]}-${c[1]}]`).join(", ")
+  : "none";
+
+const prompt = `
+You are a normal, non-cringy storyteller.
+
+A student has created a constellation called **"${name}"** linked to the planet **"${planet}"**.
+This constellation has ${stars.length} stars.
+
+Technical details for you (DO NOT list them literally in the story, just use them for inspiration):
+- Stars: ${starsInfo}
+- Connections (by star index): ${connectionsInfo}
+
+The student's preferred story style: "${storyStyle}".
+
+TASK:
+- Create a **mythological origin story** explaining how this constellation was formed. 
+- The story should reflect the constellation’s shape or pattern, as suggested by the star positions and connections.
+- Make it **fun and imaginative**, but not cringy ("look young explorer" type of writing is forbidden).
+- Connect it naturally to the planet "${planet}".
+- Include **one clear educational insight about astronomy** (like habitable zones, star types, or exoplanets).
+- Narrate from a first-person perspective as if the **universe itself** is guiding the student.
+- Keep it around **250-300 words**, in **very simple, clear language**.
+- Output plain text only.
+
+IMPORTANT:
+- Use the **pattern of connections** and star positions to imagine a shape (animal, object, figure, etc.).
+- Do NOT dump coordinates or magnitudes; **translate them into imagery** in the story.
+`;
+
+
+    console.log("Generating narration with prompt:", prompt);
+    const narration = await generatePlanetNarration(prompt);
+
+    savedConstellation.narration = narration;
+    await savedConstellation.save();
+    console.log("Narration result:", narration);
+
 
     return res.status(201).json({
       message: "Constellation saved successfully.",

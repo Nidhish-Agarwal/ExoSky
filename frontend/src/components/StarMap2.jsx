@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import React, {  useState, useRef, useMemo } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Stars as DreiStars, Text } from "@react-three/drei";
 import * as THREE from "three";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
