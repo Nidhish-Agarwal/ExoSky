@@ -22,9 +22,8 @@ function App() {
           </Route>
           <Route element={<ProtectedRoute />}>
             <Route path="/explore" element={<ExplorePage />} />
-           </Route>
-          <Route path="/visualize" element={<ExoSkyExplorer/>}/>
-          <Route path="/visualize/:plName" element={<VisualizationPage />} />
+            <Route path="/visualize" element={<ExoSkyExplorer />} />
+            <Route path="/visualize/:plName" element={<VisualizationPage />} />
           </Route>
         </Routes>
       </Router>
