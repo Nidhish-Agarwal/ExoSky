@@ -5,6 +5,7 @@ import * as THREE from "three";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { toast } from "react-toastify";
 import CentralPlanet from "./CentralPlanet";
+import { Loader2 } from "lucide-react";
 
 // Configuration for the night sky
 const SKY_RADIUS = 100; // Large sphere radius for the sky dome
@@ -176,6 +177,7 @@ const InfoPanel = ({
   onSave,
   constellationName,
   setConstellationName,
+  loading,
 }) => {
   const [isMinimized, setIsMinimized] = useState(false);
 
@@ -256,9 +258,16 @@ const InfoPanel = ({
                 />
                 <button
                   onClick={onSave}
+                  disabled={loading}
                   className="w-full px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded hover:from-orange-600 hover:to-red-600 transition-all duration-300 font-semibold shadow-lg"
                 >
-                  Save Constellation
+                  {loading ? (
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
+                    </div>
+                  ) : (
+                    "Save Constellation"
+                  )}
                 </button>
               </div>
             )}
@@ -281,6 +290,7 @@ const NightSkyStarMap = ({
   const [selectedStarsConnections, setSelectedStarsConnections] = useState([]); // new
   const [constellationName, setConstellationName] = useState("");
   const axiosPrivate = useAxiosPrivate();
+  const [loading, setLoading] = useState(false);
 
   const visibleStars = useMemo(() => {
     return starData.stars.filter((star) => star.mag >= magnitudeLimit);
@@ -366,6 +376,7 @@ const NightSkyStarMap = ({
     };
 
     try {
+      setLoading(true);
       console.log("constellation (to send):", constellation);
       const response = await axiosPrivate.post("/constellation", constellation);
       console.log("Saved constellation:", response.data);
@@ -378,6 +389,8 @@ const NightSkyStarMap = ({
     } catch (error) {
       console.error("Error saving constellation:", error);
       toast.error("Failed to save constellation. Please try again!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -390,6 +403,7 @@ const NightSkyStarMap = ({
           onSave={handleSaveConstellation}
           constellationName={constellationName}
           setConstellationName={setConstellationName}
+          loading={loading}
         />
       </div>
       <div className="absolute bottom-4 right-4 bg-black bg-opacity-60 text-white p-3 rounded-lg text-sm z-10">
