@@ -1,7 +1,7 @@
 import { Globe, Settings, Compass, Download } from "lucide-react";
 import ViewControls from "./ViewControls";
 import SkyOrientation from "./SkyOrientation";
-import Export from "./export";
+import Export from "./Export";
 import PlanetInfo from "./planetInfo";
 
 const Sidebar = ({
