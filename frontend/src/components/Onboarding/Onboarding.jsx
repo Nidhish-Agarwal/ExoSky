@@ -1,25 +1,45 @@
 import React, { useState, useEffect } from "react";
-import IntroScreen from "./introScreen";
-import Questions from "./question";
-import ThankYouScreen from "./thankYou";
-import ProgressLevel from "./progressBar";
+import IntroScreen from "./IntroScreen";
+import Questions from "./Question";
+import ThankYouScreen from "./ThankYou";
+import ProgressLevel from "./ProgressBar";
 
 const questionsData = [
   {
     question: "How do you like to explore space?",
-    options: ["Simple visuals", "Detailed science", "Advanced astronomy", "Immersive experiences"],
+    options: [
+      "Simple visuals",
+      "Detailed science",
+      "Advanced astronomy",
+      "Immersive experiences",
+    ],
   },
   {
     question: "Where are you on your space journey?",
-    options: ["Just starting", "Some basics", "Advanced explorer", "Expert navigator"],
+    options: [
+      "Just starting",
+      "Some basics",
+      "Advanced explorer",
+      "Expert navigator",
+    ],
   },
   {
     question: "What kind of space wonders make you go wow?",
-    options: ["Quick fun facts", "Deep science", "Stories & myths", "A mix of everything"],
+    options: [
+      "Quick fun facts",
+      "Deep science",
+      "Stories & myths",
+      "A mix of everything",
+    ],
   },
   {
     question: "Which part of the universe sparks your imagination the most?",
-    options: ["Stars & constellations", "Planets & orbits", "Life in space", "Space missions"],
+    options: [
+      "Stars & constellations",
+      "Planets & orbits",
+      "Life in space",
+      "Space missions",
+    ],
   },
 ];
 
@@ -35,7 +55,7 @@ export default function Onboarding({ onComplete }) {
 
   const handleAnswer = (option) => {
     setCurrentAnswer(option);
-    setAnswers(prev => ({ ...prev, [currentStep]: option }));
+    setAnswers((prev) => ({ ...prev, [currentStep]: option }));
     setUserSelected(true);
   };
 
@@ -57,7 +77,8 @@ export default function Onboarding({ onComplete }) {
         body: JSON.stringify({ answers }),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to complete onboarding");
+      if (!response.ok)
+        throw new Error(data.message || "Failed to complete onboarding");
       console.log("Onboarding submitted:", data);
     } catch (err) {
       console.error("Onboarding submission error:", err);
@@ -69,7 +90,7 @@ export default function Onboarding({ onComplete }) {
     if (userSelected && currentStep >= 0 && currentStep < totalSteps) {
       const timer = setTimeout(async () => {
         if (currentStep < totalSteps - 1) {
-          setCurrentStep(prev => prev + 1);
+          setCurrentStep((prev) => prev + 1);
           setCurrentAnswer(answers[currentStep + 1] || null);
         } else {
           await submitOnboarding(); // send answers to backend on last step

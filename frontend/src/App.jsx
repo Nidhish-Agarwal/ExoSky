@@ -1,14 +1,13 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import AuthPage from "./pages/authPage";
+import AuthPage from "./pages/AuthPage";
 import ExplorePage from "./pages/ExplorePage";
-import LandingPage from "./pages/landingPage";
+import LandingPage from "./pages/LandingPage";
 import ExoSkyExplorer from "./components/visualize/ExoskyExplorer";
-import OnboardingPage from "./pages/onboardingPage";
+import OnboardingPage from "./pages/OnboardingPage";
 import SettingsPage from "./pages/SettingsPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import VisualizationPage from "./pages/VisualizationPage";
 import Gallery from "./pages/Gallery";
 
 function App() {

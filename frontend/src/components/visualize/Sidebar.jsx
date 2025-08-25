@@ -1,9 +1,8 @@
-import React from "react";
-import { Globe, Settings, Compass, ZoomIn, Download } from "lucide-react";
-import PlanetInfo from "./planetInfo";
-import ViewControls from "./viewControls";
-import SkyOrientation from "./skyOrientation";
+import { Globe, Settings, Compass, Download } from "lucide-react";
+import ViewControls from "./ViewControls";
+import SkyOrientation from "./SkyOrientation";
 import Export from "./export";
+import PlanetInfo from "./planetInfo";
 
 const Sidebar = ({
   sidebarSection,
@@ -39,7 +38,7 @@ const Sidebar = ({
   includeGrid,
   setIncludeGrid,
   includeExoplanetInfo,
-  setIncludeExoplanetInfo
+  setIncludeExoplanetInfo,
 }) => {
   const renderSidebarContent = () => {
     switch (sidebarSection) {

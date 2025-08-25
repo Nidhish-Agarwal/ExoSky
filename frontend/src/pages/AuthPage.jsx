@@ -1,7 +1,7 @@
-import SpaceAuthPage from "../components/authentiation/auth";
+import SpaceAuthPage from "../components/authentiation/Auth";
 
-const AuthPage = ()=>{
-    return <SpaceAuthPage/>
-}
+const AuthPage = () => {
+  return <SpaceAuthPage />;
+};
 
 export default AuthPage;
