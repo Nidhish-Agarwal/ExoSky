@@ -3,6 +3,7 @@ import IntroScreen from "./IntroScreen";
 import Questions from "./Question";
 import ThankYouScreen from "./ThankYou";
 import ProgressLevel from "./ProgressBar";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const questionsData = [
   {
@@ -48,6 +49,7 @@ export default function Onboarding({ onComplete }) {
   const [answers, setAnswers] = useState({});
   const [currentAnswer, setCurrentAnswer] = useState(null);
   const [userSelected, setUserSelected] = useState(false);
+  const axiosPrivate = useAxiosPrivate();
 
   const totalSteps = questionsData.length;
 
@@ -67,18 +69,9 @@ export default function Onboarding({ onComplete }) {
   // Submit onboarding answers to backend
   const submitOnboarding = async () => {
     try {
-      const token = localStorage.getItem("accessToken"); // get JWT from login
-      const response = await fetch("http://localhost:5000/onboarding", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ answers }),
-      });
-      const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.message || "Failed to complete onboarding");
+      const response = await axiosPrivate.post("/onboarding", { answers });
+
+      const data = response.data;
       console.log("Onboarding submitted:", data);
     } catch (err) {
       console.error("Onboarding submission error:", err);
